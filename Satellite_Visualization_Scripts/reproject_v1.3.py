@@ -15,6 +15,7 @@ from netCDF4 import Dataset
 import netCDF4 as nc4
 import numpy as np
 import os
+import datetime
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap, cm
 import time
@@ -113,7 +114,14 @@ def lat_lon_reproj2(nc_folder, nc_indx):
     full_direc = os.listdir()
     nc_files = [ii for ii in full_direc if ii.endswith('.nc')]
     g16_data_file = nc_files[nc_indx] # select .nc file
-    print(nc_files[nc_indx])  # print file name
+    # print('Working on:' + nc_files[nc_indx])  # print file name
+    year = nc_files[nc_indx][23:27]
+    dayjulian = int(nc_files[nc_indx][27:30]) - 1
+    daynormal = datetime.datetime(int(year),1,1) + datetime.timedelta(int(dayjulian))
+    daynormal2 = daynormal.strftime('%Y-%m-%d')
+    HH = nc_files[nc_indx][30:32] 
+    MM = nc_files[nc_indx][32:34]
+    print('Working on:' + daynormal2 + '_' + HH + '_' + MM)
 
     # designate dataset
     g16nc = Dataset(g16_data_file, 'r')
@@ -190,7 +198,7 @@ def lat_lon_reproj2(nc_folder, nc_indx):
             'band_id': band_id, 'band_wavelength': band_wavelength,
             'band_wavelength_units': band_wavelength_units,
             'var_name': var_name}
-    return data
+    return data, daynormal2, HH, MM,
 
 
 def get_lat(lat,min_lat,max_lat):
@@ -312,8 +320,10 @@ if __name__ == '__main__':
 #    nc_folder = '/home/jfdorville/Recherche/AltonDaley/project_cloud/'
 
     file_indx = 0
-
-    data = lat_lon_reproj2(nc_folder, file_indx)
+    # print(daynormal2)
+    # print(HH)
+    # print(MM)
+    data, daynormal2, HH, MM, = lat_lon_reproj2(nc_folder, file_indx)
     roi = [16.8996, -7.0000, -53.5876, -100.0000]
 #    roi = [16.8996, 8.91853, -53.5876, -65.5484]
 #    roi = [17, 9, -52, -67]
@@ -336,7 +346,8 @@ if __name__ == '__main__':
     ax1.set_aspect('equal')
     ax1.set_xlabel('Longitude', color='cyan', fontweight='demi', fontsize=12)
     ax1.set_ylabel('Latitude', color='cyan', fontweight='demi', fontsize=12)
-    plt.savefig(png + 'test_alton2.png',
+    daynormal2 + '_' + HH + '_' + MM
+    plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_2.png',
                 format='png', transparent=False, dpi=DPI,
                 bbox_inches='tight', pad_inches=0.2)
     plt.close(fig)
@@ -352,13 +363,13 @@ if __name__ == '__main__':
     ax1.set_aspect('equal')
     ax1.set_xlabel('Longitude', color='cyan', fontweight='demi', fontsize=12)
     ax1.set_ylabel('Latitude', color='cyan', fontweight='demi', fontsize=12)
-    plt.savefig(png + 'test_alton3.png',
+    plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_3.png',
                 format='png', transparent=False, dpi=DPI,
                 bbox_inches='tight', pad_inches=0.2)
     plt.close(fig)
 
 
-    fn = 'test.nc'
+    fn = daynormal2 + '_' + HH + '_' + MM + '.nc'
     ds = nc4.Dataset(reproj_dir + fn, 'w', format='NETCDF4')
     
     #Create root groups
