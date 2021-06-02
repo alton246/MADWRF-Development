@@ -24,10 +24,10 @@ from netCDF4 import Dataset
 ###                                       ###
 #############################################
 
-PATH = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_048/'
+PATH = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/'
 file = 'wrfout_ghi_d04_2020-06-22_06:00:00'
 PNG = 'Plots/'
-PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_048/Plots/'
+PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/Plots/'
 
 plt.rcParams['font.weight']='semibold'
 plt.rcParams['font.size']='14'
