@@ -344,10 +344,10 @@ if __name__ == '__main__':
     ax1.set_xlim([data['real_lon'].min(), data['real_lon'].max()])
     ax1.set_ylim([data['real_lat'].min(), data['real_lat'].max()])
     ax1.set_aspect('equal')
-    ax1.set_xlabel('Longitude', color='cyan', fontweight='demi', fontsize=12)
-    ax1.set_ylabel('Latitude', color='cyan', fontweight='demi', fontsize=12)
+    ax1.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
+    ax1.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
     daynormal2 + '_' + HH + '_' + MM
-    plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_2.png',
+    plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_cldmask_2.png',
                 format='png', transparent=False, dpi=DPI,
                 bbox_inches='tight', pad_inches=0.2)
     plt.close(fig)
@@ -361,9 +361,9 @@ if __name__ == '__main__':
     ax1.set_xlim([data['real_lon'].min(), data['real_lon'].max()])
     ax1.set_ylim([data['real_lat'].min(), data['real_lat'].max()])
     ax1.set_aspect('equal')
-    ax1.set_xlabel('Longitude', color='cyan', fontweight='demi', fontsize=12)
-    ax1.set_ylabel('Latitude', color='cyan', fontweight='demi', fontsize=12)
-    plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_3.png',
+    ax1.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
+    ax1.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
+    plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_cldmask_3.png',
                 format='png', transparent=False, dpi=DPI,
                 bbox_inches='tight', pad_inches=0.2)
     plt.close(fig)
