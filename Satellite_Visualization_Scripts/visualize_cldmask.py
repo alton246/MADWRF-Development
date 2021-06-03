@@ -369,7 +369,7 @@ if __name__ == '__main__':
     plt.close(fig)
 
 
-    fn = daynormal2 + '_' + HH + '_' + MM + '.nc'
+    fn = daynormal2 + '_' + HH + '_' + MM + 'cldmask.nc'
     ds = nc4.Dataset(reproj_dir + fn, 'w', format='NETCDF4')
     
     #Create root groups

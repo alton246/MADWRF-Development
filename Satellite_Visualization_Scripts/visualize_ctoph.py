@@ -108,6 +108,7 @@ def lat_lon_reproj2(nc_folder, nc_indx):
     daynormal2 = daynormal.strftime('%Y-%m-%d')
     HH = nc_files[nc_indx][31:33] 
     MM = nc_files[nc_indx][33:35]
+    print('Working on:' + daynormal2 + '_' + HH + '_' + MM)
     # print(year)
     # print(dayjulian)
     # print(daynormal)
@@ -307,7 +308,7 @@ if __name__ == '__main__':
     nc_folder = base_dir + '/Data/Cloud_Top_Height/'
     png = base_dir + '/Satellite_Visualization_Scripts/Plots/'
     coast_line_dir = base_dir + '/Data/Coastline_File/'
-    reproj_dir = base_dir + '/Data/Clear_Sky_Mask/Reprojected_Files/'
+    reproj_dir = base_dir + '/Data/Cloud_Top_Height/Reprojected_Files/'
 
     file_indx = 0
     # print(daynormal2)
@@ -357,3 +358,37 @@ if __name__ == '__main__':
                 format='png', transparent=False, dpi=DPI,
                 bbox_inches='tight', pad_inches=0.2)
     plt.close(fig)
+
+
+    fn = daynormal2 + '_' + HH + '_' + MM + '_ctoph.nc'
+    ds = nc4.Dataset(reproj_dir + fn, 'w', format='NETCDF4')
+    
+    #Create root groups
+    ctoph = ds.createGroup("GOES CTOPH")
+
+    # Create Dimensions
+#    time = ds.createDimension('time', 1)
+    lats = ds.createDimension('lat', data['real_lat'].shape[0])
+    lons = ds.createDimension('lon', data['real_lon'].shape[1])
+
+    # Add NetCDF Variables
+#    times = ds.createVariable('time', 'f4', ('time',))
+    lats = ds.createVariable('lat', 'f4', ('lat',))
+    lons = ds.createVariable('lon', 'f4', ('lon',))
+    CTOPH = ds.createVariable('value', 'f4', ('lat', 'lon',),
+                              zlib=True, fill_value=-1)
+    
+
+    lats[:] = data['real_lat'][:, 0]
+    lons[:] = data['real_lon'][0, :]
+    CTOPH[:] = data['real_data']
+    
+    #Create Attributes
+    
+    ds.description = "Projection of Cloud Top Height Mask Around the eastern Caribbean"
+#    ds.history = "Created " + time.ctime(time.time())
+    ds.source = "GOES Imagery"
+    lats.units = "degrees north"
+    lons.units = "degrees east"
+    CTOPH.units = "Unknown"
+    ds.close()
