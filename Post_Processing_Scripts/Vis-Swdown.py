@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import size
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -60,9 +61,16 @@ for i in range(irr['Times'].shape[0]):
     
     ax1.coastlines(resolution='10m')                
     ax1.set_extent([x1,x2,y1,y2])
+
+    ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=100)
+    ax2 = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=100)
     
-    cb = plt.colorbar(ticks=v)
-    
+    # cb = plt.colorbar(swh, orientation='horizontal', ticks=v)
+    cbar_ax = fig.add_axes([0.09, 0.06, 0.84, 0.02])
+    cb = fig.colorbar(swh, cax=cbar_ax, orientation='horizontal', ticks=v)
+    cb.ax.set_title('Solar Irradiance ($W/{m}^2$)', fontweight='semibold', 
+                    fontsize=14)
+
     gl = ax1.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
     
