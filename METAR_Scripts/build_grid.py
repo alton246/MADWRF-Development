@@ -10,7 +10,7 @@ from glob import glob
 
 
 
-def remove_unwanted_dates(PATH, filename, dataframe_name):
+def QualityControlMETAR(PATH, filename, dataframe_name):
     
 
     """ 
@@ -75,77 +75,120 @@ def remove_unwanted_dates(PATH, filename, dataframe_name):
                   np.nan)
         final_df['skyl3'] = final_df['skyl3'].replace(['M', np.NaN], 
                   np.nan)
+        # print (final_df.columns[final_df.isna().any()])
 
 #        comb_data.append(final_df)
-        
-        
-    
         return final_df
+
+
+def InterpolateMETAR(df, start_lat, end_lat, delta_lat, start_lon, end_lon, delta_lon):
+        """
+        Interpolates the METAR data for each availalbe point within the domain
+        """
+
+        y_grid = np.arange(-7.0000, 16.8996, 0.01938)
+        x_grid = np.arange(-100.0000, -53.5876, 0.02101)
+
+        X,Y = np.meshgrid(x_grid, y_grid)
+
+
+        points = np.random.rand(len(df), 2)
+        # print(len(df_select))
+        grid_z0 = griddata(points, df['skyl1'], (X, Y), method = 'nearest')
+        Z = griddata([(x,y) for x,y in zip(df['lon'],df['lat'])], 
+                df['skyl1'], (X, Y), method='nearest')
+        
+        return X, Y, Z
+
+def CombineMETARByTime(PATH):
+        files = glob(PATH + '*.txt')
+        comb_data = []
+        for file in sorted(files):
+                df = pd.read_csv(file, skiprows=5,sep=',')
+                print('Working on station: ' + os.path.basename(file)[0:4])
+                data = QualityControlMETAR(PATH, os.path.basename(file), df)
+    
+                comb_data.append(data)
+        append_data = pd.concat(comb_data)
+
+        append_data = append_data.sort_index()
+
+        df_select = append_data.loc['2020-06-22 16:00:00']
+        df_select['skyl1'] = df_select['skyl1'].astype(float)
+
+        return df_select
+
+
+def readCoastLine(file):
+    '''
+    Read NOAA coastline with -99.0 value for empty point
+    Return two list of the two corrdinates X and Y
+    '''
+    f = open(file, 'r')
+    cl = f.readlines(-1)
+    f.close()
+    CL = []
+    for i in range(0, len(cl)):
+        CL.append(np.array(cl[i].split(), dtype='f'))
+    cl = np.reshape(CL, (len(cl), 2))
+    cl = np.ma.masked_where(cl == -99, cl)
+    return cl[:, 0], cl[:, 1]
 
 #################################################################
 ###################### Program Begins Here ######################
 #################################################################
 
 PATH = '/home/alton/WRF_OUT/Sat_Reprojection/Data/METAR_CLDBASE_HGHT/'
+PNG = '/home/alton/Github/MADWRF-Development/METAR_Scripts/Plots/'
+coast_line_dir = '/home/alton/Github/MADWRF-Development/Data/Coastline_File/'
+coast_line_file = 'merdescaraibe_m.dat'
 
-##Quality Ceck Data and combine them by hour of the day
-files = glob(PATH + '*.txt')
-comb_data = []
-for file in sorted(files):
-    df = pd.read_csv(file, skiprows=5,sep=',')
-    print('Working on station: ' + os.path.basename(file)[0:4])
-    data = remove_unwanted_dates(PATH, os.path.basename(file), df)
-    
-    comb_data.append(data)
-append_data = pd.concat(comb_data)
+DPI = 300
+plt.rcParams['font.weight']='semibold'
+plt.rcParams['font.size']='15'
 
-append_data = append_data.sort_index()
+#Quality Control and combine data
+df_select = CombineMETARByTime(PATH)
 
-df_select = append_data.loc['2020-06-22 10:00:00']
+#Interpolation
 
-# print(df_select)
+X, Y, Z = InterpolateMETAR(df_select, -7.0000, 16.8996, 0.01938, -100.0000, -53.5876, 0.02101)
 
-#Building grid to interpolate data onto
-
-
-y_grid = np.arange(-7.0000, 16.8996, 0.01938)
-x_grid = np.arange(-100.0000, -53.5876, 0.02101)
-
-X,Y = np.meshgrid(x_grid, y_grid)
-
-
-points = np.random.rand(len(df_select), 2)
-# print(len(df_select))
-grid_z0 = griddata(points, df_select['skyl1'], (X, Y), method = 'nearest')
-Z = griddata([(x,y) for x,y in zip(df_select['lon'],df_select['lat'])], 
-              df_select['skyl1'], (X, Y), method='nearest')
-print(Z)
-# plt.subplot(111)
-
-extent = [-53.5876, -100.0000, 7.0000, 16.8996]
-#
-fig = plt.figure(figsize=(12, 8))
+#Visualizing the interpolation
+extent = [-53.5876, -100.0000, -7.0000, 16.8996]
+cl = readCoastLine(coast_line_dir + coast_line_file)
+fig = plt.figure(figsize=(12, 10))
 ax = plt.subplot(111)
+mesh = ax.pcolormesh(X,Y,Z, cmap='rainbow')
+ax.plot(cl[0], cl[1], color='black')
+ax.set_xlim(extent[1], extent[0])
+ax.set_ylim(extent[2], extent[3])
+ax.set_aspect('equal')
+ax.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
+ax.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
+
+#Visualize with cartopy options
+# ax = plt.subplot(111,projection = ccrs.PlateCarree())
+
 # ax.set_extent(extent)
 
 # ax.add_feature(cartopy.feature.OCEAN)
 # ax.add_feature(cartopy.feature.LAND, facecolor='tan')
 # ax.add_feature(cartopy.feature.BORDERS, edgecolor='black')
 # ax.coastlines(resolution='10m')
-mesh = ax.pcolormesh(X,Y,Z)
-# plt.scatter(X, Y, 
-#            grid_z0, 'r', edgecolor='w')
-# plt.imshow(Z, extent=(-100.0000,-53.5876,
-#                      7.0000,16.8996), 
-                    #    origin='lower')
-# cb = plt.colorbar(orientation="horizontal", fraction=0.07,anchor=(1.0,0.0))
-plt.show()
-#cb.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-#plt.savefig(PNG+'test_base.png', dpi=150, facecolor='w', edgecolor='w',
-#            orientation='lanscape', papertype=None, format='png',
-#              bbox_inches='tight', pad_inches=0.1)
+# ax.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
+# ax.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
+# mesh = ax.pcolormesh(X,Y,Z)
 
-# plt.title('Nearest')
-# plt.show()
-# print(grid_z0)
-# print(len(lats), len(lons))
+# cb = plt.colorbar(mesh, orientation="horizontal", fraction=0.07,anchor=(1.0,0.0))
+
+plt.savefig(PNG+'2020-06-22_16_00_cldbase.png', dpi=DPI, facecolor='w', edgecolor='w',
+           orientation='lanscape', papertype=None, format='png',
+             bbox_inches='tight', pad_inches=0.1)
+
+plt.show()
+
+#cb.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+
+
+

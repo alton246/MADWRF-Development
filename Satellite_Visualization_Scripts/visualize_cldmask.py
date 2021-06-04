@@ -121,8 +121,8 @@ def lat_lon_reproj2(nc_folder, nc_indx):
     daynormal2 = daynormal.strftime('%Y-%m-%d')
     HH = nc_files[nc_indx][30:32] 
     MM = nc_files[nc_indx][32:34]
+   
     print('Working on:' + daynormal2 + '_' + HH + '_' + MM)
-
     # designate dataset
     g16nc = Dataset(g16_data_file, 'r')
     var_names = [ii for ii in g16nc.variables]
@@ -331,7 +331,7 @@ if __name__ == '__main__':
     data = proj_area2(data, roi)
 
     # visu
-    DPI = 150
+    DPI = 300
 #    DPI = 600
     plt.rcParams['font.weight']='semibold'
     plt.rcParams['font.size']='15'
@@ -346,7 +346,7 @@ if __name__ == '__main__':
     ax1.set_aspect('equal')
     ax1.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
     ax1.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
-    daynormal2 + '_' + HH + '_' + MM
+    #daynormal2 + '_' + HH + '_' + MM
     plt.savefig(png + daynormal2 + '_' + HH + '_' + MM + '_cldmask_2.png',
                 format='png', transparent=False, dpi=DPI,
                 bbox_inches='tight', pad_inches=0.2)
@@ -369,7 +369,7 @@ if __name__ == '__main__':
     plt.close(fig)
 
 
-    fn = daynormal2 + '_' + HH + '_' + MM + 'cldmask.nc'
+    fn = daynormal2 + '_' + HH + '_' + MM + '_cldmask.nc'
     ds = nc4.Dataset(reproj_dir + fn, 'w', format='NETCDF4')
     
     #Create root groups
@@ -401,23 +401,4 @@ if __name__ == '__main__':
     lons.units = "degrees east"
     BCM.units = "Unknown"
     ds.close()
-    #toc = timeit.default_timer()
-    #print(toc-tic)
 
-    #fig = plt.figure(figsize=(10,15),dpi=900)
-    ###
-    #n_add = 0
-    #bbox = [np.min(lon1),np.min(lat1),np.max(lon1),np.max(lat1)]
-    #m = Basemap(llcrnrlon=bbox[0]-n_add,llcrnrlat=bbox[1]-n_add,urcrnrlon=bbox[2]+n_add,urcrnrlat=bbox[3]+n_add,projection='merc', resolution='i')
-    #m.drawcoastlines(linewidth=0.5)
-    #m.drawcountries(linewidth=0.25)
-    #m.pcolormesh(lon1, lat1, DATA, latlon=True)
-    #parallels = np.linspace(np.min(lat),np.max(lat),5.)
-    #m.drawparallels(parallels,labels=[True,False,False,False])
-    #meridians = np.linspace(np.min(lon),np.max(lon),5.)
-    #m.drawmeridians(meridians,labels=[False,False,False,True])
-    #cb = m.colorbar()
-    ##
-    #plt.show()
-
-#    exit()
