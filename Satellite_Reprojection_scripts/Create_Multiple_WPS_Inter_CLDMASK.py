@@ -69,13 +69,14 @@ def write_SLAB(f,data):
     count = 1
     for col in data:
         for val in col:
-            f.write('%s,' % val)
-            if count % 40 == 0:
-                f.write('%s, & \n' % val)
-            elif count == f_val:
-                f.write('%s' % val)                
-#            print(count,val)
-            count = count + 1
+            print(val,type(val))
+#             f.write('%s,' % val)
+#             if count % 40 == 0:
+#                 f.write('%s, & \n' % val)
+#             elif count == f_val:
+#                 f.write('%s' % val)                
+# #            print(count,val)
+#             count = count + 1
 
 def file_writer(data, daynormal2, HH, MM):
     f = open(out_dir + 'test' + daynormal2 + '_' + HH + ':' + MM + ':' + '00.f95', 'w')
