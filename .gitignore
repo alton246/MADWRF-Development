@@ -1,4 +1,5 @@
 #Ignore all plots
 *.png
 *.pdf
+*.f95
 MADWRF-Research_Paper/Research_Papers/
