@@ -34,7 +34,7 @@ def GetObservedIrradiance(mask1, mask):
         for j in range(len(mask.time.values)):
 #        print(mask.time.values[j])
             if mask1[i] == mask.time.values[j]:
-                print(mask.time.values[j], mask.SWdown_global.values[j], i)
+                # print(mask.time.values[j], mask.SWdown_global.values[j], i)
                 values.append(mask.SWdown_global.values[j])
 # values.insert(3,np.nan)
     return values
@@ -43,12 +43,12 @@ def GetObservedIrradiance(mask1, mask):
 ####                                          ####  
 ##################################################
 
-BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/20200622/'
-TS_DIR = BASE_DIR + '06Z/Ts_List_Ang0_068/'
+BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
+TS_DIR = BASE_DIR + 'Run_with_BRTEMP_CLDMASK_CLDBASEZ/Ts_List/'
 ts_file = 'Bco.d04.TS'
 
-print(TS_DIR[-9:-1])
-PYRA_DIR = BASE_DIR + 'Pyranometer_Data/'
+# print(TS_DIR[-9:-1])
+PYRA_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment4/20200622/Pyranometer_Data/'
 pyr_file = 'Radiation__Deebles_Point__DownwellingRadiation__1s__20200622.nc'
 
 PNG = TS_DIR + 'PNG/'
@@ -62,7 +62,7 @@ mask = ds.sel(time=slice('2020-06-22 06:00:00', '2020-06-22 18:00:00'))
 
 obs_swdwn = GetObservedIrradiance(mask1, mask)
 
-print(len(swdwn2), len(obs_swdwn))
+# print(len(swdwn2), len(obs_swdwn))
 
 fig = plt.figure(figsize=(12,5))
 #ax = fig.gca()
@@ -80,7 +80,8 @@ plt.yticks(fontweight='semibold', fontsize=15)
 plt.grid(True, lw=0.5, ls=':')
 plt.legend(loc='best')
 
-plt.savefig(PNG + "BCO_06Z_" + TS_DIR[-9:-1] + "_Run.png", dpi=300, facecolor='w', 
+# plt.savefig(PNG + "BCO_06Z_" + TS_DIR[-9:-1] + "_Run.png", dpi=300, facecolor='w',
+plt.savefig(PNG + "BCO_06Z_Run.png", dpi=300, facecolor='w', 
             edgecolor='w', orientation='lanscape', papertype=None, format='png',
             bbox_inches='tight', pad_inches=0.1)
 

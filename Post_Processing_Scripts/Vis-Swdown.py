@@ -25,9 +25,9 @@ from netCDF4 import Dataset
 ###                                       ###
 #############################################
 
-PATH = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/'
+PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/Run_with_BRTEMP_CLDMASK_CLDBASEZ/Output_File/'
 file = 'wrfout_ghi_d04_2020-06-22_06:00:00'
-PNG = 'Plots/'
+PNG = PATH + 'Plots/'
 PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/Plots/'
 
 plt.rcParams['font.weight']='semibold'
@@ -79,7 +79,7 @@ for i in range(irr['Times'].shape[0]):
     gl.xlabel_style = {'size': 14, 'color': 'black', 'weight': 'semibold'}
     gl.ylabel_style = {'size': 14, 'color': 'black', 'weight': 'semibold'}
 
-    plt.savefig(PNG2+"MADWRF_Nowcast_" + str(i).zfill(2) + ".png", dpi=300, 
+    plt.savefig(PNG+"MADWRF_Nowcast_" + str(i).zfill(2) + ".png", dpi=300, 
     facecolor='w', edgecolor='w',orientation='lanscape', 
     papertype=None, format='png',bbox_inches='tight', 
     transparent=True, pad_inches=0.1)
