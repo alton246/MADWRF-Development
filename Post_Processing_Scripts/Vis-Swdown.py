@@ -25,10 +25,10 @@ from netCDF4 import Dataset
 ###                                       ###
 #############################################
 
-PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/Run_with_BRTEMP_CLDMASK_CLDBASEZ/Output_File/'
+PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/Run_with_CLDTOPZ_CLDMASK_CLDBASEZ/Output_Flies/'
 file = 'wrfout_ghi_d04_2020-06-22_06:00:00'
 PNG = PATH + 'Plots/'
-PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/Plots/'
+# PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/Plots/'
 
 plt.rcParams['font.weight']='semibold'
 plt.rcParams['font.size']='14'
@@ -44,11 +44,11 @@ for i in range(irr['Times'].shape[0]):
     # print(x1,y1)
     # print(x2,y2)
 
-    fig = plt.figure(figsize=(12,10))
+    fig = plt.figure(figsize=(18,10))
     
     ax1 = plt.subplot(111,projection = ccrs.PlateCarree())
 
-    v = np.linspace(0, 1100, 12, endpoint=True)
+    v = np.linspace(0, 1100, 23, endpoint=True)
 
     swh = plt.contourf(irr['XLONG'][i][0,:], irr['XLAT'][i][:,0], irr['SWDOWN2'][i], v,
                   transform=ccrs.PlateCarree(),cmap=cmo.solar)
@@ -66,7 +66,7 @@ for i in range(irr['Times'].shape[0]):
     ax2 = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=100)
     
     # cb = plt.colorbar(swh, orientation='horizontal', ticks=v)
-    cbar_ax = fig.add_axes([0.09, 0.06, 0.84, 0.02])
+    cbar_ax = fig.add_axes([0.09, 0.02, 0.84, 0.02])
     cb = fig.colorbar(swh, cax=cbar_ax, orientation='horizontal', ticks=v)
     cb.ax.set_title('Solar Irradiance ($W/{m}^2$)', fontweight='semibold', 
                     fontsize=14)

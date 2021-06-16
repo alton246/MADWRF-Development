@@ -44,7 +44,7 @@ def GetObservedIrradiance(mask1, mask):
 ##################################################
 
 BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
-TS_DIR = BASE_DIR + 'Run_with_BRTEMP_CLDMASK_CLDBASEZ/Ts_List/'
+TS_DIR = BASE_DIR + 'Run_with_CLDTOPZ_CLDMASK_CLDBASEZ/Ts_list/'
 ts_file = 'Bco.d04.TS'
 
 # print(TS_DIR[-9:-1])
@@ -70,7 +70,8 @@ fig = plt.figure(figsize=(12,5))
 plt.plot(mask1, swdwn2, color='b', label='swdwn', linestyle='--', marker='*')
 plt.plot(mask1, obs_swdwn, color='r',label='ghi_obs', linestyle='-', marker='*')
 plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 2',color='k',style='italic')
-plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
+# plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
+plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = 0.034' ,color='k',style='italic')
 # plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')
 plt.xlabel('Time (HH:MM)', fontsize=15)
 plt.ylabel('Irradiance $W/{m}^2$', fontsize=15)
