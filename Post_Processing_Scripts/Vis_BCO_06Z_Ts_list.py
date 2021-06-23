@@ -44,7 +44,7 @@ def GetObservedIrradiance(mask1, mask):
 ##################################################
 
 BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
-TS_DIR = BASE_DIR + 'Run_with_CLDTOPZ_CLDMASK_CLDBASEZ/Ts_list/'
+TS_DIR = BASE_DIR + 'CLDBASEZ_Interp_Cubic/CLDMASK_BRTEMP_CLDBASEZ/Ts_List/'
 ts_file = 'Bco.d04.TS'
 
 # print(TS_DIR[-9:-1])

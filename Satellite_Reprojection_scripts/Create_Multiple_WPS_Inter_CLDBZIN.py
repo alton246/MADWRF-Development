@@ -13,12 +13,12 @@ from glob import glob
 
 
 
-def QualityControlMETAR(PATH, filename, dataframe_name):
+def QualityControlMETAR(date, time, PATH, filename, dataframe_name):
     
 
     """ 
     Removes unwanted time periods because we are only interested in hourly
-    data.
+    data. Date time must be entered in the form yyy-mm-dd hh:mm:ss and should be strings
     """
     
     dataframe_name = pd.read_csv(PATH + filename, skiprows=5,
@@ -52,7 +52,8 @@ def QualityControlMETAR(PATH, filename, dataframe_name):
         """     
         if len(updated_df.index) != 24:
 #        print('yes')
-            idx = pd.date_range(start = '2020-06-22 00:00:00', freq="H", periods=24)
+            idx = pd.date_range(start = date + ' ' + time, freq="H", periods=24)
+        #     idx = pd.date_range(start = '2020-06-22 00:00:00', freq="H", periods=24)
 #        print('no')
             updated_df = dataframe_name.reindex(idx)
             
@@ -191,7 +192,7 @@ def FortranFileWriter(X, Y, Z, daynormal2, HH, MM):
         f.write('  integer :: IFV=5 \n')
         f.write('\n')
         f.write("  character(len=24) :: HDATE = '" + daynormal2 + '_' + HH + ':' + MM + ':' + '00' +  "' \n")
-        f.write('  real :: XFCST=0.000000 \n')
+        f.write('  real :: XFCST=100.000000 \n')
         f.write("  character(len=8) :: STARTLOC='SWCORNER' \n")
         f.write("  character(len=9) :: FIELD= 'CLDBASEZ'\n" )
         f.write("  character(len=25) :: UNITS='kilometers' \n")
@@ -309,7 +310,7 @@ def FortranFileWriter(X, Y, Z, daynormal2, HH, MM):
 ###################### Program Begins Here ######################
 #################################################################
 
-PATH = '/home/alton/WRF_OUT/Sat_Reprojection/Data/METAR_CLDBASE_HGHT/'
+PATH = '/home/alton/WRF_OUT/Sat_Reprojection/Data/METAR_CLDBASE_HGHT/20210616/'
 PNG = '/home/alton/Github/MADWRF-Development/METAR_Scripts/Plots/'
 out_dir = '/home/alton/Github/MADWRF-Development/Satellite_Reprojection_scripts/WPS_Intermediate_Files/CLDBZIN/'
 coast_line_dir = '/home/alton/Github/MADWRF-Development/Data/Coastline_File/'
@@ -320,7 +321,7 @@ comb_data = []
 for file in sorted(files):
         df = pd.read_csv(file, skiprows=5,sep=',')
         print('Working on station: ' + os.path.basename(file)[0:4])
-        data = QualityControlMETAR(PATH, os.path.basename(file), df)
+        data = QualityControlMETAR('20210616', '00:00:00',PATH, os.path.basename(file), df)
     
         comb_data.append(data)
 append_data = pd.concat(comb_data)
