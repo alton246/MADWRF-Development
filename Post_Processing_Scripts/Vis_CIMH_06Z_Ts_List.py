@@ -31,15 +31,15 @@ def GetIrradianceTslist(filepath, filename):
 ####          Program begins here             ####  
 ##################################################
 
-BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment4/20200622/06Z/'
-TS_DIR = BASE_DIR + 'Ts_List_Ang0_034/'
+BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/CLDMASK_BRTEMP_CLDBASEZ/'
+TS_DIR = BASE_DIR + 'Ts_List/'
 
 # BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
 # TS_DIR = BASE_DIR + 'CLDBASEZ_Interp_Nearest/Run_with_CLDTOPZ_CLDBASEZ/Ts_list/'
 ts_file = 'Cimh.d04.TS'
 
-PATH = '/home/alton/WRF_OUT/Deebles_Point_Data/'
-file = 'Solar_Rad_20_Ju_2020-31_Jan_2021.xlsx'
+PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/Observed_Data/'
+file = 'Solar_Request.xlsx'
 
 PNG = TS_DIR + '/PNG/'
 
@@ -47,7 +47,7 @@ swdwn2 = GetIrradianceTslist(TS_DIR, ts_file)
 
 #Reading Excel File
 obs = pd.read_excel(PATH+file, 
-                    sheet_name='Sheet3', 
+                    sheet_name='Sheet2', 
                     parse_dates=[['Date','Time']])
 
 #Creating Time Periods of Interest
@@ -59,7 +59,7 @@ mask1 = pd.date_range("2020-06-22 06:00:00", freq="15T", periods=49)
 fig = plt.figure(figsize=(12,5))
 #ax = fig.gca()
 #ax.set_xticks(np.arange(0, 48, 1))
-plt.plot(mask1, obs['Average W/m2'][26:75], color='r',label='ghi_obs', linestyle='-', marker='*')
+plt.plot(mask1, obs['Average W/m2'][0:49], color='r',label='ghi_obs', linestyle='-', marker='*')
 plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')
 plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 2',color='k',style='italic')
 # plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')

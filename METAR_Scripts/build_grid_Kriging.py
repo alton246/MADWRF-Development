@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import cartopy.crs as ccrs
 import cartopy
+import pykrige.kriging_tools as kt
+from pykrige.ok import OrdinaryKriging
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp2d
 from scipy.interpolate import griddata
@@ -94,7 +96,7 @@ def InterpolateMETAR(df, start_lat, end_lat, delta_lat, start_lon, end_lon, delt
 
         points = np.random.rand(len(df), 2)
         # print(len(df_select))
-        # grid_z0 = griddata(points, df['skyl1'], (X, Y), method = 'cubic')
+        grid_z0 = griddata(points, df['skyl1'], (X, Y), method = 'cubic')
         Z = griddata([(x,y) for x,y in zip(df['lon'],df['lat'])], 
                 df['skyl1'], (X, Y), method='nearest')
         
@@ -150,43 +152,73 @@ plt.rcParams['font.size']='15'
 #Quality Control and combine data
 df_select = CombineMETARByTime(PATH)
 
+y_grid = np.arange(-7.0000, 16.8996, 0.01938)
+x_grid = np.arange(-100.0000, -53.5876, 0.02101)
+
+X,Y = np.meshgrid(x_grid, y_grid)
+Z = griddata([(x,y) for x,y in zip(df_select['lon'],df_select['lat'])], 
+                df_select['skyl1'], (X, Y), method='nearest')
+print(Z.shape)
+print(X.shape)
+print(Y.shape)
+# coord = [(x,y) for x,y in zip(df_select['lon'],df_select['lat'])]
+
+# print(coord)
+# print(X.shape)l
+# print(Y.shape)
+# print(df_select['skyl1'].shape)
+OK = OrdinaryKriging(
+    X,
+    Y,
+    Z,
+    variogram_model="linear",
+    verbose=False,
+    enable_plotting=False
+)
+# points = np.random.rand(len(df_select), 2)
+# print(points)
+# print(df_select)
+        # print(len(df_select))
+# grid_z0 = griddata(points, df_select['skyl1'], (X, Y), method = 'cubic')
+# Z = griddata([(x,y) for x,y in zip(df_select['lon'],df_select['lat'])], 
+#                 df_select['skyl1'], (X, Y), method='nearest')
 #Interpolation
 
-X, Y, Z = InterpolateMETAR(df_select, -7.0000, 16.8996, 0.01938, -100.0000, -53.5876, 0.02101)
+# X, Y, Z = InterpolateMETAR(df_select, -7.0000, 16.8996, 0.01938, -100.0000, -53.5876, 0.02101)
 
 #Visualizing the interpolation
-extent = [-53.5876, -100.0000, -7.0000, 16.8996]
-cl = readCoastLine(coast_line_dir + coast_line_file)
-fig = plt.figure(figsize=(12, 10))
-ax = plt.subplot(111)
-mesh = ax.pcolormesh(X,Y,Z, cmap='rainbow')
-ax.plot(cl[0], cl[1], color='black')
-ax.set_xlim(extent[1], extent[0])
-ax.set_ylim(extent[2], extent[3])
-ax.set_aspect('equal')
-ax.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
-ax.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
-
-#Visualize with cartopy options
-# ax = plt.subplot(111,projection = ccrs.PlateCarree())
-
-# ax.set_extent(extent)
-
-# ax.add_feature(cartopy.feature.OCEAN)
-# ax.add_feature(cartopy.feature.LAND, facecolor='tan')
-# ax.add_feature(cartopy.feature.BORDERS, edgecolor='black')
-# ax.coastlines(resolution='10m')
+# extent = [-53.5876, -100.0000, -7.0000, 16.8996]
+# cl = readCoastLine(coast_line_dir + coast_line_file)
+# fig = plt.figure(figsize=(12, 10))
+# ax = plt.subplot(111)
+# mesh = ax.pcolormesh(X,Y,Z, cmap='rainbow')
+# ax.plot(cl[0], cl[1], color='black')
+# ax.set_xlim(extent[1], extent[0])
+# ax.set_ylim(extent[2], extent[3])
+# ax.set_aspect('equal')
 # ax.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
 # ax.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
-# mesh = ax.pcolormesh(X,Y,Z)
 
-# cb = plt.colorbar(mesh, orientation="horizontal", fraction=0.07,anchor=(1.0,0.0))
+# #Visualize with cartopy options
+# # ax = plt.subplot(111,projection = ccrs.PlateCarree())
 
-plt.savefig(PNG+'2020-06-22_16_00_cldbase_cubic.png', dpi=DPI, facecolor='w', edgecolor='w',
-           orientation='lanscape', papertype=None, format='png',
-             bbox_inches='tight', pad_inches=0.1)
+# # ax.set_extent(extent)
 
-plt.show()
+# # ax.add_feature(cartopy.feature.OCEAN)
+# # ax.add_feature(cartopy.feature.LAND, facecolor='tan')
+# # ax.add_feature(cartopy.feature.BORDERS, edgecolor='black')
+# # ax.coastlines(resolution='10m')
+# # ax.set_xlabel('Longitude', color='black', fontweight='demi', fontsize=12)
+# # ax.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
+# # mesh = ax.pcolormesh(X,Y,Z)
+
+# # cb = plt.colorbar(mesh, orientation="horizontal", fraction=0.07,anchor=(1.0,0.0))
+
+# plt.savefig(PNG+'2020-06-22_16_00_cldbase_cubic.png', dpi=DPI, facecolor='w', edgecolor='w',
+#            orientation='lanscape', papertype=None, format='png',
+#              bbox_inches='tight', pad_inches=0.1)
+
+# plt.show()
 
 #cb.xaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 
