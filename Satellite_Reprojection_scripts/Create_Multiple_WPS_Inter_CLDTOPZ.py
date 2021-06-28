@@ -109,7 +109,7 @@ def file_writer(data, daynormal2, HH, MM):
     f.write("  character(len=25) :: UNITS='km' \n")
     f.write("  character(len=46) :: DESC='Cloud Top Height' \n")
     f.write("  character(len=32) :: MAP_SOURCE='GOES Imagery' \n")
-    f.write('  real :: XLVL=0 \n')
+    f.write('  real :: XLVL=100 \n')
     f.write('  integer :: NX=' + str(data['real_lon'].shape[1]) +' \n')
     f.write('  integer :: NY=' + str(data['real_lat'].shape[0]) +' \n')
     f.write('  integer :: IPROJ=' + str(0) +' \n')

@@ -94,7 +94,7 @@ def InterpolateMETAR(df, start_lat, end_lat, delta_lat, start_lon, end_lon, delt
 
         points = np.random.rand(len(df), 2)
         # print(len(df_select))
-        grid_z0 = griddata(points, df['skyl1'], (X, Y), method = 'nearest')
+        # grid_z0 = griddata(points, df['skyl1'], (X, Y), method = 'cubic')
         Z = griddata([(x,y) for x,y in zip(df['lon'],df['lat'])], 
                 df['skyl1'], (X, Y), method='nearest')
         
@@ -182,7 +182,7 @@ ax.set_ylabel('Latitude', color='black', fontweight='demi', fontsize=12)
 
 # cb = plt.colorbar(mesh, orientation="horizontal", fraction=0.07,anchor=(1.0,0.0))
 
-plt.savefig(PNG+'2020-06-22_16_00_cldbase.png', dpi=DPI, facecolor='w', edgecolor='w',
+plt.savefig(PNG+'2020-06-22_16_00_cldbase_cubic.png', dpi=DPI, facecolor='w', edgecolor='w',
            orientation='lanscape', papertype=None, format='png',
              bbox_inches='tight', pad_inches=0.1)
 

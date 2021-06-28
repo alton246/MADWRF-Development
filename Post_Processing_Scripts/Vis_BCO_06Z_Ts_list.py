@@ -30,11 +30,13 @@ def GetIrradianceTslist(filepath, filename):
 def GetObservedIrradiance(mask1, mask):
     values = []
     for i in range(len(mask1)):
-#    print(mask1[i])
+        # print(mask1[i])
         for j in range(len(mask.time.values)):
-#        print(mask.time.values[j])
+            # print(mask.time.values[j])
             if mask1[i] == mask.time.values[j]:
-                print(mask.time.values[j], mask.SWdown_global.values[j], i)
+                # if mask1[i] == None:
+                    # print(mask1[i])
+                # print(mask.time.values[j], mask.SWdown_global.values[j], i)
                 values.append(mask.SWdown_global.values[j])
 # values.insert(3,np.nan)
     return values
@@ -43,34 +45,40 @@ def GetObservedIrradiance(mask1, mask):
 ####                                          ####  
 ##################################################
 
-BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/20200622/'
-TS_DIR = BASE_DIR + '06Z/Ts_List_Ang0_068/'
+BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
+# TS_DIR_CUB = BASE_DIR + 'CLDBASEZ_Interp_Nearest/20210615/CLDMASK/Ts_List'
+TS_DIR_NE =  BASE_DIR + 'CLDBASEZ_Interp_Nearest/20210616/CLDMASK_BRTEMP_CLDBASEZ/Ts_List/'
 ts_file = 'Bco.d04.TS'
 
-print(TS_DIR[-9:-1])
-PYRA_DIR = BASE_DIR + 'Pyranometer_Data/'
-pyr_file = 'Radiation__Deebles_Point__DownwellingRadiation__1s__20200622.nc'
+# print(TS_DIR[-9:-1])
+PYRA_DIR = BASE_DIR + 'CLDBASEZ_Interp_Nearest/20210616/Observed_Data/'
+pyr_file = 'Radiation__Deebles_Point__DownwellingRadiation__1s__20210616.nc'
 
-PNG = TS_DIR + 'PNG/'
-swdwn2 = GetIrradianceTslist(TS_DIR, ts_file )
+PNG = TS_DIR_NE + 'PNG/'
+# swdwn2_cub = GetIrradianceTslist(TS_DIR_CUB, ts_file )
+swdwn2_ne = GetIrradianceTslist(TS_DIR_NE, ts_file )
 
 
 # irr = xr.open_dataset(PATH + file)
-ds = xr.open_mfdataset(PYRA_DIR + 'Radiation__*.nc', concat_dim="time")
-mask1 = pd.date_range("2020-06-22 06:00:00", freq="15T", periods=49)
-mask = ds.sel(time=slice('2020-06-22 06:00:00', '2020-06-22 18:00:00'))
-
+# ds = xr.open_mfdataset(PYRA_DIR + 'Radiation__*.nc', concat_dim="time")
+ds = xr.open_dataset(PYRA_DIR + pyr_file)
+mask1 = pd.date_range("2021-06-16 06:00:00", freq="15T", periods=49)
+mask = ds.sel(time=slice('2021-06-16 06:00:00', '2021-06-16 18:00:00'))
+# print(mask)
 obs_swdwn = GetObservedIrradiance(mask1, mask)
 
-print(len(swdwn2), len(obs_swdwn))
+obs_swdwn.insert(1,np.nan)
+# print(len(swdwn2), len(obs_swdwn))
 
 fig = plt.figure(figsize=(12,5))
 #ax = fig.gca()
 #ax.set_xticks(np.arange(0, 48, 1))
-plt.plot(mask1, swdwn2, color='b', label='swdwn', linestyle='--', marker='*')
+# plt.plot(mask1, swdwn2_cub, color='b', label='swdwn_cub', linestyle='--', marker='*')
+plt.plot(mask1, swdwn2_ne, color='b', label='swdwn_near', linestyle='--', marker='*')
 plt.plot(mask1, obs_swdwn, color='r',label='ghi_obs', linestyle='-', marker='*')
-plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 2',color='k',style='italic')
-plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
+plt.text(mask1[0], max(swdwn2_ne) - 100, 'AOD = 2',color='k',style='italic')
+# plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
+plt.text(mask1[0], max(swdwn2_ne) - 150, 'Ang_Exp = 0.034' ,color='k',style='italic')
 # plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')
 plt.xlabel('Time (HH:MM)', fontsize=15)
 plt.ylabel('Irradiance $W/{m}^2$', fontsize=15)
@@ -80,7 +88,8 @@ plt.yticks(fontweight='semibold', fontsize=15)
 plt.grid(True, lw=0.5, ls=':')
 plt.legend(loc='best')
 
-plt.savefig(PNG + "BCO_06Z_" + TS_DIR[-9:-1] + "_Run.png", dpi=300, facecolor='w', 
+# plt.savefig(PNG + "BCO_06Z_" + TS_DIR[-9:-1] + "_Run.png", dpi=300, facecolor='w',
+plt.savefig(PNG + "BCO_06Z_Run_BRTEMP_CLDMASK_CLDBASEZ.png", dpi=300, facecolor='w', 
             edgecolor='w', orientation='lanscape', papertype=None, format='png',
             bbox_inches='tight', pad_inches=0.1)
 
