@@ -47,12 +47,14 @@ def GetObservedIrradiance(mask1, mask):
 ####       Progam Begins Here                 ####  
 ##################################################
 
-BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/20200622/'
-TS_DIR = BASE_DIR + '12Z/Ts_List_Ang0_068/'
-ts_file = 'Bco.d04.TS'
+# /home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/12Z/AOD_2_Ang_0_0034/CLDMASK/Ts_list
 
-print(TS_DIR[-9:-1])
-PYRA_DIR = BASE_DIR + 'Pyranometer_Data/'
+BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/'
+TS_DIR = BASE_DIR + '12Z/AOD_2_Ang_0_0034/CLDMASK/Ts_list/'
+ts_file = 'Bco.d04.TS'
+# 
+# print(TS_DIR[-9:-1])
+PYRA_DIR = BASE_DIR + 'Observed_Data/'
 pyr_file = 'Radiation__Deebles_Point__DownwellingRadiation__1s__20200622.nc'
 
 PNG = TS_DIR + 'PNG/'
@@ -60,13 +62,14 @@ swdwn2 = GetIrradianceTslist(TS_DIR, ts_file )
 
 
 # irr = xr.open_dataset(PATH + file)
-ds = xr.open_mfdataset(PYRA_DIR + 'Radiation__*.nc', concat_dim="time")
-mask1 = pd.date_range("2020-06-22 12:00:00", freq="15T", periods=49)
-mask = ds.sel(time=slice('2020-06-22 12:00:00', '2020-06-23 00:00:00'))
+ds = xr.open_mfdataset(PYRA_DIR + 'Radiation__*.nc', combine='by_coords')
+mask1 = pd.date_range("2021-06-16 12:00:00", freq="15T", periods=49)
+mask = ds.sel(time=slice('2021-06-16 12:00:00', '2021-06-17 00:00:00'))
 
 obs_swdwn = GetObservedIrradiance(mask1, mask)
 
-print(len(swdwn2), len(obs_swdwn))
+print(len(mask1), len(obs_swdwn))
+print(len(mask1), len(swdwn2))
 
 d_fmt = DateFormatter("%m-%d")
 
@@ -74,9 +77,9 @@ fig = plt.figure(figsize=(12,5))
 #ax = fig.gca()
 #ax.set_xticks(np.arange(0, 48, 1))
 plt.plot(mask1, swdwn2, color='b', label='swdwn', linestyle='--', marker='*')
-plt.plot(mask1, obs_swdwn, color='r',label='ghi_obs', linestyle='-', marker='*')
+plt.plot(mask1, obs_swdwn[0:49], color='r',label='ghi_obs', linestyle='-', marker='*')
 plt.text(mask1[-8], max(swdwn2) - 100, 'AOD = 2',color='k',style='italic')
-plt.text(mask1[-8], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
+plt.text(mask1[-8], max(swdwn2) - 150, 'Ang_Exp = 0.034' ,color='k', style='italic')
 # plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')
 plt.xlabel('Time (HH:MM)', fontsize=15)
 plt.ylabel('Irradiance $W/{m}^2$', fontsize=15)
@@ -87,7 +90,7 @@ plt.yticks(fontweight='semibold', fontsize=15)
 plt.grid(True, lw=0.5, ls=':')
 plt.legend(loc='best')
 
-plt.savefig(PNG + "BCO_06Z_" + TS_DIR[-9:-1] + "_Run.png", dpi=300, facecolor='w', 
+plt.savefig(PNG + "BCO_12Z_Run.png", dpi=300, facecolor='w', 
             edgecolor='w', orientation='lanscape', papertype=None, format='png',
             bbox_inches='tight', pad_inches=0.1)
 

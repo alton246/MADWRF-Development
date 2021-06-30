@@ -25,8 +25,8 @@ from netCDF4 import Dataset
 ###                                       ###
 #############################################
 
-PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210615/CLDMASK/Output_Files/'
-file = 'wrfout_ghi_d04_2021-06-16_06:00:00'
+PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/12Z/AOD_2_Ang_0_0034/CLDMASK/Output_Files/'
+file = 'wrfout_ghi_d04_2021-06-16_12:00:00'
 PNG = PATH + 'PNG/'
 # PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/Plots/'
 

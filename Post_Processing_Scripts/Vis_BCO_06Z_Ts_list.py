@@ -47,7 +47,7 @@ def GetObservedIrradiance(mask1, mask):
 
 BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
 # TS_DIR_CUB = BASE_DIR + 'CLDBASEZ_Interp_Nearest/20210615/CLDMASK/Ts_List'
-TS_DIR_NE =  BASE_DIR + 'CLDBASEZ_Interp_Nearest/20210616/CLDMASK_BRTEMP_CLDBASEZ/Ts_List/'
+TS_DIR_NE =  BASE_DIR + 'CLDBASEZ_Interp_Nearest/20210616/06Z/AOD_1_Ang_0_034/CLDMASK/Ts_List/'
 ts_file = 'Bco.d04.TS'
 
 # print(TS_DIR[-9:-1])
@@ -76,7 +76,7 @@ fig = plt.figure(figsize=(12,5))
 # plt.plot(mask1, swdwn2_cub, color='b', label='swdwn_cub', linestyle='--', marker='*')
 plt.plot(mask1, swdwn2_ne, color='b', label='swdwn_near', linestyle='--', marker='*')
 plt.plot(mask1, obs_swdwn, color='r',label='ghi_obs', linestyle='-', marker='*')
-plt.text(mask1[0], max(swdwn2_ne) - 100, 'AOD = 2',color='k',style='italic')
+plt.text(mask1[0], max(swdwn2_ne) - 100, 'AOD = 1',color='k',style='italic')
 # plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
 plt.text(mask1[0], max(swdwn2_ne) - 150, 'Ang_Exp = 0.034' ,color='k',style='italic')
 # plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')

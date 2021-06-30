@@ -31,7 +31,7 @@ def GetIrradianceTslist(filepath, filename):
 ####          Program begins here             ####  
 ##################################################
 
-BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/CLDMASK_BRTEMP_CLDBASEZ/'
+BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/06Z/AOD_2_Ang_0_034/CLDMASK/'
 TS_DIR = BASE_DIR + 'Ts_List/'
 
 # BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
@@ -61,7 +61,7 @@ fig = plt.figure(figsize=(12,5))
 #ax.set_xticks(np.arange(0, 48, 1))
 plt.plot(mask1, obs['Average W/m2'][0:49], color='r',label='ghi_obs', linestyle='-', marker='*')
 plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')
-plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 2',color='k',style='italic')
+plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 1',color='k',style='italic')
 # plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
 plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = 0.034' ,color='k',style='italic')
 plt.xlabel('Time (HH:MM)', fontsize=15)
