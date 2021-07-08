@@ -1,21 +1,11 @@
 import os           # Miscellaneous operating system $
-import errno
 import subprocess   # The subprocess module allows yo$
 import platform           # Access to underlying plat$
 import sys
-import datetime
-from datetime import date
 
 
-def make_sure_path_exists(path):
-    try:
-        os.makedirs(path)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
 
-
-def GetSatCLDMASK(year, julian_day, hour, outdir):
+def GetSatCLDMASK(year, julian_day, outdir):
     # Get the O.S.
     osystem = platform.system()
     if osystem == "Windows":
@@ -34,7 +24,7 @@ def GetSatCLDMASK(year, julian_day, hour, outdir):
     #HOUR = '15'               # Choose from 00 to 23
 
 
-    for hr in range(0,int(hour)):
+    for hr in range(0,24):
         print ("Current year, julian day and hour based on your local machine:")
         print("YEAR: ", YEAR)
         print("JULIAN DAY: ", JULIAN_DAY)
@@ -64,7 +54,7 @@ def GetSatCLDMASK(year, julian_day, hour, outdir):
     print ("Finish Downloading Cloud Mask Data!")
 
 
-def GetSatCTOPH(year, julian_day, hour, outdir):
+def GetSatCTOPH(year, julian_day, outdir):
     # Get the O.S.
     osystem = platform.system()
     if osystem == "Windows":
@@ -81,39 +71,39 @@ def GetSatCTOPH(year, julian_day, hour, outdir):
     YEAR = year             # Choose from ['2017', '2018', '2019']
     JULIAN_DAY = julian_day        # Data available after julian day 283, 2017 (October 10, 2017)
 
-    for hr in range(0,int(hour)):
+    for hr in range(0,24):
         print ("Current year, julian day and hour based on your local machine:")
         print("YEAR: ", YEAR)
         print("JULIAN DAY: ", JULIAN_DAY)
 
-        if len(str(hr)) < 2:
-            HOUR = str(hr).zfill(2)
-        else:
-            HOUR = str(hr)
-        print("HOUR (UTC): ", HOUR)
+    if len(str(hr)) < 2:
+        HOUR = str(hr).zfill(2)
+    else:
+	    HOUR = str(hr)
+    print("HOUR (UTC): ", HOUR)
 
-        OUTDIR = outdir + str(HOUR) + '/'
+    OUTDIR = outdir + str(HOUR) + '/'
 
-        files = subprocess.check_output('rclone' + extension + " " + 'ls publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + HOUR + "/", shell=True)
+    files = subprocess.check_output('rclone' + extension + " " + 'ls publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + HOUR + "/", shell=True)
 
-        files = files.decode()
-        ## Split files based on the new line and remove the empty item at the end.
-        files = files.split('\n')
-        files.remove('')
-        ## Get only the file names for an specific channel
+    files = files.decode()
+    ## Split files based on the new line and remove the empty item at the end.
+    files = files.split('\n')
+    files.remove('')
+    ## Get only the file names for an specific channel
 
-    #    # Get only the file names, without the file sizes
-        files = [i.split(" ")[-1] for i in files]
+#    # Get only the file names, without the file sizes
+    files = [i.split(" ")[-1] for i in files]
 
 
-        for i in range(len(files)):
-            os.system('rclone' + extension + " " + 'copy publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + str(HOUR) + "/" + str(files[i]) + " " + OUTDIR)
+    for i in range(len(files)):
+        os.system('rclone' + extension + " " + 'copy publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + str(HOUR) + "/" + str(files[i]) + " " + OUTDIR)
 
     print ("Finish Downloading Cloud Top Height Data!")
 
     
 
-def GetSatBRTEMP(year, julian_day, hour, outdir):
+def GetSatBRTEMP(year, julian_day, outdir):
     # Get the O.S.
     osystem = platform.system()
     if osystem == "Windows":
@@ -131,78 +121,62 @@ def GetSatBRTEMP(year, julian_day, hour, outdir):
     YEAR = year             # Choose from ['2017', '2018', '2019']
     JULIAN_DAY = julian_day        # Data available after julian day 283, 2017 (October 10, 2017)
 
-    for hr in range(0,int(hour)):
-        # print(hr)
+    for hr in range(0,24):
         print ("Current year, julian day and hour based on your local machine:")
         print("YEAR: ", YEAR)
         print("JULIAN DAY: ", JULIAN_DAY)
 
-        if len(str(hr)) < 2:
-            HOUR = str(hr).zfill(2)
-        else:
-	        HOUR = str(hr)
-        print("HOUR (UTC): ", HOUR)
+    if len(str(hr)) < 2:
+        HOUR = str(hr).zfill(2)
+    else:
+	    HOUR = str(hr)
+    print("HOUR (UTC): ", HOUR)
 
-        CHANNEL = 'C13'           # Choose from ['C01 C02 C03 C04 C05 C06 C07 C08 C09 C10 C11 C12 C13 C14 C15 C16']
-        OUTDIR = outdir + str(HOUR) + '/'
+    CHANNEL = 'C13'           # Choose from ['C01 C02 C03 C04 C05 C06 C07 C08 C09 C10 C11 C12 C13 C14 C15 C16']
+    OUTDIR = outdir + str(HOUR) + '/'
 
-        files = subprocess.check_output('rclone' + extension + " " + 'ls publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + str(HOUR) + "/", shell=True)
+    files = subprocess.check_output('rclone' + extension + " " + 'ls publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + str(HOUR) + "/", shell=True)
 
-        files = files.decode()
-        ## Split files based on the new line and remove the empty item at the end.
-        files = files.split('\n')
-        files.remove('')
-        ## Get only the file names for an specific channel
-        files = [x for x in files if CHANNEL in x ]
-        # Get only the file names, without the file sizes
-        files = [i.split(" ")[-1] for i in files]
+    files = files.decode()
+    ## Split files based on the new line and remove the empty item at the end.
+    files = files.split('\n')
+    files.remove('')
+    ## Get only the file names for an specific channel
+    files = [x for x in files if CHANNEL in x ]
+    # Get only the file names, without the file sizes
+    files = [i.split(" ")[-1] for i in files]
 
-        if not files:
-            print("No files available yet... Exiting script")
-            sys.exit()
+    if not files:
+        print("No files available yet... Exiting script")
+        sys.exit()
 
-        print ("Downloading files ...")
+    print ("Downloading files ...")
 
-        for i in range(len(files)):
-    #    print(files[i])
-            os.system('rclone' + extension + " " + 'copy publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + str(HOUR) + "/" + str(files[i]) + " " + OUTDIR)
+    for i in range(len(files)):
+#    print(files[i])
+        os.system('rclone' + extension + " " + 'copy publicAWS:' + BUCKET + "/" + PRODUCT + "/" + YEAR + "/" + JULIAN_DAY + "/" + str(HOUR) + "/" + str(files[i]) + " " + OUTDIR)
 
-    print("Finish Downloading Brightness Temperature Data!")
-
-
+print("Finish Downloading Brightness Temperature Data!")
 
 
 
 
 
 
-#############################################################
+
 
 #############################################################
-# JULIAN_DAY = '168'
-# YEAR = '2021'
-# OUTDIR = '/home/alton/Satellie_Imagery/Data/Channel13/20210616/'
 
-YEAR = str(datetime.datetime.now().year)                      # Year got from local machine
-JULIAN_DAY = str(datetime.datetime.now().timetuple().tm_yday) # Julian day got from local machine
-UTC_DIFF = +4                                                 # How many hours UTC is ahead (+) or behind you (-)
-HOUR = str(datetime.datetime.now().hour + UTC_DIFF).zfill(2)  # Hour got from local machine corrected for UTC
+#############################################################
+JULIAN_DAY = '168'
+YEAR = '2021'
+OUTDIR = '/home/alton/Satellie_Imagery/Data/Channel13/20210616/'
 
-today = date.today()
-d = today.strftime("%Y""%m""%d")
-BASEDIR = '/home/alton/Satellie_Imagery/Data/'
 
-#Set Paths Here
-BRTEMP_OUTDIR = BASEDIR + 'Channel13/' + str(d) + '/'
-CTOPH_OUTDIR = BASEDIR + 'CTOPH/' + str(d) + '/'
-CLDMASK_OUTDIR = BASEDIR + 'Clear_Sky_Mask/' + str(d) + '/'
 
-#Test to make sure that all paths are made
-make_sure_path_exists(BRTEMP_OUTDIR)
-make_sure_path_exists(CTOPH_OUTDIR)
-make_sure_path_exists(CLDMASK_OUTDIR)
 
-GetSatBRTEMP(YEAR, JULIAN_DAY,HOUR, BRTEMP_OUTDIR)
-GetSatCTOPH(YEAR, JULIAN_DAY,HOUR , CTOPH_OUTDIR)
-GetSatCLDMASK(YEAR, JULIAN_DAY, HOUR, CLDMASK_OUTDIR)
 
+
+# GetSatCLDMASK(YEAR, JULIAN_DAY, OUTDIR)
+# GetSatCTOPH(YEAR, JULIAN_DAY, OUTDIR)
+GetSatBRTEMP(YEAR, JULIAN_DAY, OUTDIR)
