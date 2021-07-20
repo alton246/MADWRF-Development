@@ -27,6 +27,47 @@ def GetIrradianceTslist(filepath, filename):
         # swdwn.append(data.iloc[:, -11].mean())
     return swdwn2
 
+    def GetSwdni2Tslist(filepath, filename):
+        df = pd.read_csv(os.path.join(filepath, filename), header=None, sep="\s+", skiprows=1)
+
+        interval = 0.25
+        num_columns = 5
+
+        #TS_List_Processing
+        df['groups'] = df.iloc[:, 1] // interval
+        grps = df.groupby(['groups'])
+
+        #for i in range(num_columns):
+        #    print(i)
+        swdni2 = []
+        for groups in grps:
+    #        print(groups)
+            data = groups[1]
+            swdni2.append(data.iloc[:, -5].mean())
+            # swdwn.append(data.iloc[:, -11].mean())
+        return swdni2
+
+def GetSwdif2Tslist(filepath, filename):
+    df = pd.read_csv(os.path.join(filepath, filename), header=None, sep="\s+", skiprows=1)
+
+    interval = 0.25
+    num_columns = 5
+
+    #TS_List_Processing
+    df['groups'] = df.iloc[:, 1] // interval
+    grps = df.groupby(['groups'])
+
+    #for i in range(num_columns):
+    #    print(i)
+    swdif2 = []
+    swdwn = []
+    for groups in grps:
+#        print(groups)
+        data = groups[1]
+        swdif2.append(data.iloc[:, -4].mean())
+        # swdwn.append(data.iloc[:, -11].mean())
+    return swdif2
+
 def GetObservedIrradiance(mask1, mask):
     values = []
     for i in range(len(mask1)):
