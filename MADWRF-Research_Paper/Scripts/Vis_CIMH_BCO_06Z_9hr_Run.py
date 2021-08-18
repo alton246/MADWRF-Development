@@ -61,7 +61,7 @@ def GetObservedIrradiance(mask1, mask):
         for j in range(len(mask.time.values)):
 #        print(mask.time.values[j])
             if mask1[i] == mask.time.values[j]:
-                # print(mask.time.values[j], mask.SWdown_global.values[j], i)
+                print(mask.time.values[j], mask.SWdown_global.values[j], i)
                 swdown.append(mask.SWdown_global.values[j])
                 swdni.append(mask.SWdown_direct.values[j])
                 swdif.append(mask.SWdown_diffuse.values[j])
@@ -76,12 +76,12 @@ def GetObservedIrradiance(mask1, mask):
 
 
 BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment6/CLDBASEZ_Interp_Nearest/20210616/'
-PNG = '/home/alton/WRF_OUT/New_Experiments/DFarrell/CLDTOPZ_CLDBASEZ/Ts_List/PNG/'
+PNG = BASE_DIR + '06Z/Summary/'
 
 #Paths for tsfiles
-TS_DIR = BASE_DIR + '12Z/AOD_0.616_Ang-0.054/CLDMASK_BRTEMP/Ts_List'
-TS_DIR_CLDTOP = BASE_DIR + '12Z/AOD_0.616_Ang-0.054/CLDTOPZ_CLDBASEZ/Ts_List/'
-DFARR_DIR = '/home/alton/WRF_OUT/New_Experiments/DFarrell/CLDTOPZ_CLDBASEZ/Ts_List/'
+TS_DIR = BASE_DIR + '06Z/AOD_0.616_Ang-0.054/CLDMASK_BRTEMP/Ts_List/'
+TS_DIR_CLDTOP = BASE_DIR + '06Z/AOD_0.616_Ang-0.054/CLDTOPZ_CLDBASEZ/Ts_List/'
+# DFARR_DIR = '/home/alton/WRF_OUT/New_Experiments/DFarrell/CLDTOPZ_CLDBASEZ/Ts_List/'
 # TS_DIR_BR = BASE_DIR + '12Z/BRTEMP_CLDMASK_CLDBASEZ/Ts_List/'
 bco_ts_file = 'Bco.d04.TS'
 cimh_ts_file = 'Cimh.d04.TS'
@@ -95,19 +95,20 @@ ds = xr.open_dataset(OBS_DIR + bco_pyr_file)
 cimh_obs = pd.read_excel(OBS_DIR + cimh_pyr_file, 
                     sheet_name='Sheet2', 
                     parse_dates=[['Date','Time']])
-mask1 = pd.date_range("2021-06-16 12:00:00", freq="15T", periods=25)
-mask = ds.sel(time=slice('2021-06-16 12:00:00', '2021-06-16 18:00:00'))
+mask1 = pd.date_range("2021-06-16 06:00:00", freq="15T", periods=49)
+mask = ds.sel(time=slice('2021-06-16 06:00:00', '2021-06-16 18:00:00'))
 
 bco_swdwn, bco_swdni, bco_swdif = GetObservedIrradiance(mask1, mask)
+bco_swdwn.insert(1,np.nan)
 
 #Retrieve Data from BCO tslist
 swdwn2, swdni2, swdif2 = GetIrradianceTslist(TS_DIR, bco_ts_file )
 swdwnctop, swdni2ctop, swdif2ctop = GetIrradianceTslist(TS_DIR_CLDTOP, bco_ts_file )
-swdwnbr, swdni2br, swdif2br = GetIrradianceTslist(DFARR_DIR, bco_ts_file )
+# swdwnbr, swdni2br, swdif2br = GetIrradianceTslist(DFARR_DIR, bco_ts_file )
 
 swdwn2_cldmask = GetSwdwnTslist(TS_DIR, cimh_ts_file)
 swdwn2_cldtopz = GetSwdwnTslist(TS_DIR_CLDTOP, cimh_ts_file)
-swdwn2_brtemp = GetSwdwnTslist(DFARR_DIR, cimh_ts_file)
+# swdwn2_brtemp = GetSwdwnTslist(DFARR_DIR, cimh_ts_file)
 
 d_fmt = DateFormatter("%m-%d")
 plt.rcParams['font.weight']='semibold'
@@ -121,7 +122,7 @@ ax = plt.subplot(2,1,1)
 # plt.title()
 plt.plot(mask1, swdwn2, color='b', label='cldmask-brtemp', linestyle='--', marker='*')
 plt.plot(mask1, swdwnctop, color='g', label='ctoph-cldbasez', linestyle='--', marker='*')
-plt.plot(mask1, swdwnbr, color='c', label='dfarrell', linestyle='--', marker='*')
+# plt.plot(mask1, swdwnbr, color='c', label='dfarrell', linestyle='--', marker='*')
 plt.plot(mask1, bco_swdwn, color='r',label='observed', linestyle='-', marker='*')
 # ax.axvspan("2021-06-16 15:28:00", "2021-06-16 16:02:00", color='grey', alpha=0.3)
 plt.text(mask1[-1], 400, 'a)', color='k', style='normal',fontsize='9')
@@ -133,13 +134,13 @@ plt.yticks(fontweight='semibold', fontsize=9)
 plt.grid(True, lw=0.5, ls=':')
 plt.legend(loc='best', prop=legend_properties)
 
-print(cimh_obs['Average W/m2'][80], cimh_obs['Average W/m2'][105])
+print(cimh_obs['Average W/m2'][0], cimh_obs['Average W/m2'][49])
 ax2 = plt.subplot(2,1,2)
 # plt.title()
 plt.plot(mask1, swdwn2_cldmask, color='b', label='cldmask-brtemp', linestyle='--', marker='*')
 plt.plot(mask1, swdwn2_cldtopz, color='g', label='ctoph-cldbasez', linestyle='--', marker='*')
-plt.plot(mask1, swdwn2_brtemp, color='c', label='dfarrell', linestyle='--', marker='*')
-plt.plot(mask1, cimh_obs['Average W/m2'][80:105], color='r',label='observed', linestyle='-', marker='*')
+# plt.plot(mask1, swdwn2_brtemp, color='c', label='dfarrell', linestyle='--', marker='*')
+plt.plot(mask1, cimh_obs['Average W/m2'][0:49], color='r',label='observed', linestyle='-', marker='*')
 # plt.plot(mask1, cimh_obs['Average W/m2'][48:73], color='r',label='observed', linestyle='-', marker='*')
 # ax2.axvspan("2021-06-16 15:28:00", "2021-06-16 16:02:00", color='grey', alpha=0.3)
 plt.text(mask1[-1], 400, 'b)', color='k', style='normal',fontsize='9')
@@ -151,7 +152,7 @@ plt.yticks(fontweight='semibold', fontsize=9)
 plt.grid(True, lw=0.5, ls=':')
 plt.legend(loc='best', prop=legend_properties)
 
-plt.savefig(PNG + "BCO_CIMH_12Z_6HR_20200622_Run_Newest.png", dpi=300, facecolor='w', 
+plt.savefig(PNG + "BCO_CIMH_06Z_12HR_20200622_Run_Newest.png", dpi=300, facecolor='w', 
             edgecolor='w', orientation='lanscape', papertype=None, format='png',
             bbox_inches='tight', pad_inches=0.1)
 

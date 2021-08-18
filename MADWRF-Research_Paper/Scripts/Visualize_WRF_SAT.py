@@ -17,7 +17,7 @@ from matplotlib import ticker
 from cartopy.feature import NaturalEarthFeature
 from netCDF4 import Dataset
 
-PATH = '/home/alton/Github/MADWRF-Development/MADWRF-Research_Paper/Data/WRF_OUT/20210616/CLDTOPZ_CLDBASEZ/'
+PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment6/CLDBASEZ_Interp_Nearest/20210616/12Z/AOD_0.616_Ang-0.054/CLDTOPZ_CLDBASEZ/Output_Files/'
 file = 'wrfout_ghi_d04_2021-06-16_12:00:00'
 
 PATH_SAT = '/home/alton/Github/MADWRF-Development/MADWRF-Research_Paper/Data/Satellite_Imagery/True_Color/20210616/'
@@ -29,7 +29,7 @@ plt.rcParams['font.size']='9'
 v = np.linspace(0, 1100, 23, endpoint=True)
 
 irr = Dataset(PATH+file, 'r')
-mask1 = pd.date_range("2021-06-16 12:00:00", freq="15T", periods=25)
+mask1 = pd.date_range("2021-06-16 12:00:00", freq="15T", periods=49)
 
 # for i in range(len(mask1)):
 #         print(i, mask1[i])
@@ -39,13 +39,14 @@ states = NaturalEarthFeature(category="cultural", scale="10m",
                                  name="admin_1_states_provinces_shp")
 x1,x2=irr['XLONG'][0].data.min(),irr['XLONG'][0].data.max()
 y1,y2=irr['XLAT'][0].data.min(),irr['XLAT'][0].data.max()
-
+print(x1,x2)
+print(y1,y2)
 fig = plt.figure(figsize=(22,8))
     
 ax1 = plt.subplot(2,3,1,projection = ccrs.PlateCarree())
 
-swh1 = plt.contourf(irr['XLONG'][14][0,:], irr['XLAT'][14][:,0], irr['SWDOWN2'][14], v,
-                  transform=ccrs.PlateCarree(),cmap=cmo.solar)
+swh1 = plt.contourf(irr['XLONG'][11][0,:], irr['XLAT'][11][:,0], irr['SWDOWN2'][11], v,
+                  transform=ccrs.PlateCarree(),cmap=plt.cm.Greys)
 
 ax1.add_feature(states, linewidth=0.5, edgecolor="black")
     
@@ -53,46 +54,46 @@ ax1.coastlines(resolution='10m')
 ax1.set_extent([x1,x2,y1,y2])
 ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=75)
 ax = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=75)
-ax = plt.text(-59.90, 13.45, 'a)', color='k', style='normal',fontsize='12')
+ax = plt.text(-59.90, 13.45, 'a)', color='r', style='normal',fontsize='12')
 gl = ax1.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
 gl.xlabels_top = False
 gl.ylabels_right = False
 gl.xlabel_style = {'size': 9, 'color': 'black', 'weight': 'semibold'}
 gl.ylabel_style = {'size': 9, 'color': 'black', 'weight': 'semibold'}
-plt.title(mask1[14], fontsize='9', fontweight='semibold')
+plt.title(mask1[11], fontsize='9', fontweight='semibold')
 
 # # plt.show()
 
 ax2 = plt.subplot(2,3,2,projection = ccrs.PlateCarree())
 
-swh2 = plt.contourf(irr['XLONG'][15][0,:], irr['XLAT'][15][:,0], irr['SWDOWN2'][15], v,
-                  transform=ccrs.PlateCarree(),cmap=cmo.solar)
+swh2 = plt.contourf(irr['XLONG'][12][0,:], irr['XLAT'][12][:,0], irr['SWDOWN2'][12], v,
+                  transform=ccrs.PlateCarree(),cmap=plt.cm.Greys)
 ax2.add_feature(states, linewidth=0.5, edgecolor="black")
 ax2.coastlines(resolution='10m')                
 ax2.set_extent([x1,x2,y1,y2])
 ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=75)
 ax = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=75)
-ax = plt.text(-59.90, 13.45, 'b)', color='k', style='normal',fontsize='12')
+ax = plt.text(-59.90, 13.45, 'b)', color='r', style='normal',fontsize='12')
 gl = ax2.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
 gl.xlabels_top = False
 gl.ylabels_right = False
 gl.xlabel_style = {'size': 9, 'color': 'black', 'weight': 'semibold'}
 gl.ylabel_style = {'size': 9, 'color': 'black', 'weight': 'semibold'}
-plt.title(mask1[15], fontsize='9', fontweight='semibold')
+plt.title(mask1[12], fontsize='9', fontweight='semibold')
 
 
 ax3 = plt.subplot(2,3,3,projection = ccrs.PlateCarree())
 
-swh3 = plt.contourf(irr['XLONG'][16][0,:], irr['XLAT'][16][:,0], irr['SWDOWN2'][16], v,
-                  transform=ccrs.PlateCarree(),cmap=cmo.solar)
+swh3 = plt.contourf(irr['XLONG'][14][0,:], irr['XLAT'][14][:,0], irr['SWDOWN2'][14], v,
+                  transform=ccrs.PlateCarree(),cmap=plt.cm.Greys)
 ax3.add_feature(states, linewidth=0.5, edgecolor="black")
 ax3.coastlines(resolution='10m')                
 ax3.set_extent([x1,x2,y1,y2])
 ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=75)
 ax = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=75)
-ax = plt.text(-59.90, 13.45, 'c)', color='k', style='normal',fontsize='12')
+ax = plt.text(-59.90, 13.45, 'c)', color='r', style='normal',fontsize='12')
 
 gl = ax3.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
@@ -100,7 +101,7 @@ gl.xlabels_top = False
 gl.ylabels_right = False
 gl.xlabel_style = {'size': 9, 'color': 'black', 'weight': 'semibold'}
 gl.ylabel_style = {'size': 9, 'color': 'black', 'weight': 'semibold'}
-plt.title(mask1[16], fontsize='9', fontweight='semibold')
+plt.title(mask1[14], fontsize='9', fontweight='semibold')
 
 fig.subplots_adjust(right=0.8)
 cbar_ax = fig.add_axes([0.85, 0.15, 0.01, 0.7])
@@ -115,9 +116,9 @@ os.chdir(PATH_SAT)
 extension = 'nc'
 all_filenames = [i for i in sorted(glob('*.{}'.format(extension)))]
 
-print(all_filenames)
+# print(all_filenames)
 
-F = xr.open_dataset(all_filenames[1])
+F = xr.open_dataset(all_filenames[0])
 
         # Scan's start time, converted to datetime object
 scan_start = datetime.strptime(F.time_coverage_start, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -197,7 +198,7 @@ ax4.add_feature(ccrs.cartopy.feature.BORDERS, linewidth=1)
 ax4.add_feature(states, linewidth=0.5, edgecolor="yellow")
 ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=75)
 ax = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=75)
-ax = plt.text(-59.90, 13.45, 'd)', color='k', style='normal',fontsize='12')
+ax = plt.text(-59.90, 13.45, 'd)', color='r', style='normal',fontsize='12')
 gl = ax4.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
     
@@ -211,7 +212,7 @@ plt.title('Full Disk\n{}'.format(scan_start.strftime('%H:%M UTC %d %B %Y')),
                       fontsize=8, loc='right')
 
 
-F = xr.open_dataset(all_filenames[2])
+F = xr.open_dataset(all_filenames[1])
 
         # Scan's start time, converted to datetime object
 scan_start = datetime.strptime(F.time_coverage_start, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -291,7 +292,7 @@ ax5.add_feature(ccrs.cartopy.feature.BORDERS, linewidth=1)
 ax5.add_feature(states, linewidth=0.5, edgecolor="yellow")
 ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=75)
 ax = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=75)
-ax = plt.text(-59.90, 13.45, 'e)', color='k', style='normal',fontsize='12')
+ax = plt.text(-59.90, 13.45, 'e)', color='r', style='normal',fontsize='12')
 gl = ax5.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
     
@@ -304,7 +305,7 @@ plt.title('GOES-16 True Color', fontweight='bold', fontsize=9, loc='left')
 plt.title('Full Disk\n{}'.format(scan_start.strftime('%H:%M UTC %d %B %Y')),
                       fontsize=8, loc='right')
 
-F = xr.open_dataset(all_filenames[3])
+F = xr.open_dataset(all_filenames[2])
 
         # Scan's start time, converted to datetime object
 scan_start = datetime.strptime(F.time_coverage_start, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -384,7 +385,7 @@ ax6.add_feature(ccrs.cartopy.feature.BORDERS, linewidth=1)
 ax6.add_feature(states, linewidth=0.5, edgecolor="yellow")
 ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=75)
 ax = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=75)
-ax = plt.text(-59.90, 13.45, 'f)', color='k', style='normal',fontsize='12')
+ax = plt.text(-59.90, 13.45, 'f)', color='r', style='normal',fontsize='12')
 gl = ax6.gridlines(draw_labels=True,
             linewidth=0.5, color='black', alpha=0.5, linestyle='--')
     
