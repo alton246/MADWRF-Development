@@ -25,8 +25,8 @@ from netCDF4 import Dataset
 ###                                       ###
 #############################################
 
-PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210615/CLDMASK/Output_Files/'
-file = 'wrfout_ghi_d04_2021-06-16_06:00:00'
+PATH = '/home/alton/WRF_OUT/New_Experiments/Experiment6/CLDBASEZ_Interp_Nearest/20210616/12Z/AOD_0.616_Ang-0.054/CLDTOPZ_CLDBASEZ/Output_Files/'
+file = 'wrfout_ghi_d04_2021-06-16_12:00:00'
 PNG = PATH + 'PNG/'
 # PNG2 = '/home/alton/WRF_OUT/New_Experiments/20200622/06Z/Output_Files_Ang0_034/Plots/'
 
@@ -34,8 +34,10 @@ plt.rcParams['font.weight']='semibold'
 plt.rcParams['font.size']='14'
 irr = Dataset(PATH+file, 'r')
 
+mask1 = pd.date_range("2021-06-16 12:00:00", freq="15T", periods=49)
+# print(mask1[0])
 for i in range(irr['Times'].shape[0]):
-    # print(i)
+    print(mask1[i])
     # print(irr['Times'].shape[0])
 
     x1,x2=irr['XLONG'][i].data.min(),irr['XLONG'][i].data.max()
@@ -49,9 +51,14 @@ for i in range(irr['Times'].shape[0]):
     ax1 = plt.subplot(111,projection = ccrs.PlateCarree())
 
     v = np.linspace(0, 1100, 23, endpoint=True)
+    # v = np.linspace(0, 1000, 21, endpoint=True)
 
+    # swh = plt.contourf(irr['XLONG'][i][0,:], irr['XLAT'][i][:,0], irr['SWDOWN2'][i], v,
+                #   transform=ccrs.PlateCarree(),cmap='gist_ncar')
     swh = plt.contourf(irr['XLONG'][i][0,:], irr['XLAT'][i][:,0], irr['SWDOWN2'][i], v,
-                  transform=ccrs.PlateCarree(),cmap=cmo.solar)
+                  transform=ccrs.PlateCarree(),cmap=plt.cm.Greys)
+
+    plt.title(mask1[i], fontsize='18', fontweight='semibold')
 
     states = NaturalEarthFeature(category="cultural", scale="10m",
                                  facecolor="none",
@@ -62,8 +69,8 @@ for i in range(irr['Times'].shape[0]):
     ax1.coastlines(resolution='10m')                
     ax1.set_extent([x1,x2,y1,y2])
 
-    ax = plt.scatter(-59.4289, 13.1627, marker='*', color='m', s=100)
-    ax2 = plt.scatter(-59.6245, 13.1499, marker='o', color='c', s=100)
+    ax = plt.scatter(-59.4289, 13.1627, marker='*', color='k', s=100)
+    ax2 = plt.scatter(-59.6245, 13.1499, marker='o', color='k', s=100)
     
     # cb = plt.colorbar(swh, orientation='horizontal', ticks=v)
     cbar_ax = fig.add_axes([0.09, 0.02, 0.84, 0.02])
@@ -78,6 +85,8 @@ for i in range(irr['Times'].shape[0]):
     gl.ylabels_right = False
     gl.xlabel_style = {'size': 14, 'color': 'black', 'weight': 'semibold'}
     gl.ylabel_style = {'size': 14, 'color': 'black', 'weight': 'semibold'}
+    # print(mask1[1])
+    # plt.title(mask1[i], fontsize='14', fontweight='semibold')
 
     plt.savefig(PNG+"MADWRF_Nowcast_" + str(i).zfill(2) + ".png", dpi=300, 
     facecolor='w', edgecolor='w',orientation='lanscape', 

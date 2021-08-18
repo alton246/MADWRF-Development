@@ -31,8 +31,8 @@ def GetIrradianceTslist(filepath, filename):
 ####          Program begins here             ####  
 ##################################################
 
-BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/CLDMASK_BRTEMP_CLDBASEZ/'
-TS_DIR = BASE_DIR + 'Ts_List/'
+BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/CLDBASEZ_Interp_Nearest/20210616/06Z/AOD_0_12_Ang0_26/CLDMASK/'
+TS_DIR = BASE_DIR + 'Ts_list/'
 
 # BASE_DIR = '/home/alton/WRF_OUT/New_Experiments/Experiment5/'
 # TS_DIR = BASE_DIR + 'CLDBASEZ_Interp_Nearest/Run_with_CLDTOPZ_CLDBASEZ/Ts_list/'
@@ -61,9 +61,9 @@ fig = plt.figure(figsize=(12,5))
 #ax.set_xticks(np.arange(0, 48, 1))
 plt.plot(mask1, obs['Average W/m2'][0:49], color='r',label='ghi_obs', linestyle='-', marker='*')
 plt.plot(mask1, swdwn2, color='g',label='swdwn2', linestyle=':', marker='*')
-plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 2',color='k',style='italic')
+plt.text(mask1[0], max(swdwn2) - 100, 'AOD = 0.12',color='k',style='italic')
 # plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = ' + TS_DIR[-6:-1]  ,color='k',style='italic')
-plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = 0.034' ,color='k',style='italic')
+plt.text(mask1[0], max(swdwn2) - 150, 'Ang_Exp = 0.26' ,color='k',style='italic')
 plt.xlabel('Time (HH:MM)', fontsize=15)
 plt.ylabel('Irradiance $W/{m}^2$', fontsize=15)
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
@@ -72,7 +72,7 @@ plt.yticks(fontweight='semibold', fontsize=15)
 plt.grid(True, lw=0.5, ls=':')
 plt.legend(loc='best')
 
-plt.savefig(PNG + "CIMH_06Z_Run.png", dpi=300, facecolor='w', 
+plt.savefig(PNG + "CIMH_06Z_CLDMASK_Run.png", dpi=300, facecolor='w', 
             edgecolor='w', orientation='lanscape', papertype=None, format='png',
             bbox_inches='tight', pad_inches=0.1)
 
